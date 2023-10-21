@@ -30,7 +30,7 @@ Our experiments include:
 Install dependencies
 ```bash
 # clone project
-git clone git@github.com:DreamFold/FoldFlow.git
+git clone https://github.com/DreamFold/FoldFlow.git
 cd FoldFlow
 
 # [OPTIONAL] create conda environment
