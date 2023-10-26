@@ -8,7 +8,7 @@
 </div>
 
 ## Description
-This is the official repository for the paper [SE(3) diffusion model with application to protein backbone generation](https://arxiv.org/abs/2310.02391). 
+This is the official repository for the paper [SE(3)-Stochastic Flow Matching for Protein Backbone Generation](https://arxiv.org/abs/2310.02391). 
 
 We propose a new family of [Flow Matching](https://openreview.net/forum?id=PqvMRDCJT9t) methods called FoldFlow tailored for distributions on SE(3) and with a focus on protein backbone generation. Our 3 proposed methods are:
 
