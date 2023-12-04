@@ -13,7 +13,7 @@ This is the official repository for the paper [SE(3)-Stochastic Flow Matching fo
 We propose a new family of [Flow Matching](https://openreview.net/forum?id=PqvMRDCJT9t) methods called FoldFlow tailored for distributions on SE(3) and with a focus on protein backbone generation. Our 3 proposed methods are:
 
 - The first one is **FoldFlow-base**. Inspired by [Riemannian Flow Matching](https://arxiv.org/abs/2302.03660), we develop a Flow Matching approach to generate data living on SO(3) manifold.
-- The second one is **FoldFlow-OT** which generalizes FoldFlow-base by drawing samples from a minibatch optimal transport coupling similarly to [OT-CFM](https://arxiv.org/abs/2302.00482).
+- The second one is **FoldFlow-OT** which generalizes FoldFlow-base by drawing samples from a minibatch optimal transport coupling similar to [OT-CFM](https://arxiv.org/abs/2302.00482).
 - The third one is **FoldFlow-SFM**, a stochastic version of FoldFlow-OT.
 
 Our experiments include: 
@@ -82,10 +82,10 @@ We welcome issues and pull requests (especially bug fixes) and contributions.
 We will try our best to improve readability and answer questions!
 
 
-## Licences
+## Licenses
 <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/Dreamfold/foldflow">FoldFlow</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://dreamfold.ai">Dreamfold</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Attribution-NonCommercial 4.0 International<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"></a></p>
 
 ### Warning: the current code uses PyTorch 1.13 and torchdyn 1.0.6.
 
-This code base is heavily inspired from the TorchCFM library! You can check Flow Matching with data living on Euclidean spaces there https://github.com/atong01/conditional-flow-matching
+This code base is heavily inspired by the TorchCFM library! You can check Flow Matching with data living on Euclidean spaces there https://github.com/atong01/conditional-flow-matching
 
