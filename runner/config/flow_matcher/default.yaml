@@ -1,0 +1,22 @@
+flow_trans: True
+flow_rot: True
+ot_fn: exact
+reg: 0.05 # only used if ot_fn is 'sinkhorn'.
+ot_plan: False # Using OT plan to pair the noise with data. Default False.
+stochastic_paths: False # Switches to stochastic
+
+# R(3) Flow Matcher arguments
+r3:
+  min_b: 0.01
+  min_sigma: 0.01
+  max_b: 20.0
+  coordinate_scaling: 0.1
+  g: 0.1
+
+# SO(3) Flow Matcher arguments
+so3:
+  min_sigma: 0.01
+  max_sigma: 1.5
+  axis_angle: True
+  inference_scaling: -0.01
+  g: 0.1

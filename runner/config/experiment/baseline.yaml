@@ -1,0 +1,53 @@
+# Experiment metadata
+name: baseline
+run_id: null
+
+#training mode
+use_ddp : False
+
+# Training arguments
+log_freq: 100
+batch_size: 256
+eval_batch_size: ${data.samples_per_eval_length}
+num_loader_workers: 12
+torch_num_threads: 8
+num_epoch: 500
+learning_rate: 0.0001
+max_squared_res: 500000
+prefetch_factor: 100
+use_gpu: True
+num_gpus: 1
+sample_mode: cluster_time_batch
+
+
+# How many steps to checkpoint between.
+ckpt_freq: 5000
+eval_freq: 5000
+# Take early checkpoint at step 100. Helpful for catching eval bugs early.
+early_ckpt: True
+
+# Checkpoint directory to warm start from.
+# if warm_start is "auto" then checks the dir for any checkpoints
+warm_start: null
+use_warm_start_conf: False
+ckpt_dir: ./ckpt/
+full_ckpt_dir: ${experiment.ckpt_dir}/${experiment.name}/
+
+# Loss weights.
+trans_loss_weight: 1.0
+rot_loss_weight: 0.5
+rot_loss_t_threshold: 0.0
+separate_rot_loss: True
+trans_x0_threshold: 0.0
+coordinate_scaling: ${flow_matcher.r3.coordinate_scaling}
+bb_atom_loss_weight: 1.0
+bb_atom_loss_t_filter: 0.25
+dist_mat_loss_weight: 1.0
+dist_mat_loss_t_filter: 0.25
+aux_loss_weight: 0.25
+
+# Evaluation.
+eval_dir: ./eval_outputs
+noise_scale: 1.0
+# Filled in during training.
+num_parameters: null

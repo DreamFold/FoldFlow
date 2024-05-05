@@ -1,0 +1,20 @@
+# CSV for path and metadata to training examples.
+csv_path: /mnt/shared_storage/processed_pdbs/metadata.csv
+cluster_path: /mnt/shared_storage/processed_pdbs/clusters-by-entity-30.txt
+filtering:
+  max_len: 512
+  min_len: 60
+  # Selects a subset of examples. Useful for debugging.
+  subset: null
+  allowed_oligomer: [monomeric]
+  max_helix_percent: 1.0
+  max_loop_percent: 0.5
+  min_beta_percent: -1.0
+  rog_quantile: 0.96
+min_t: 0.01
+samples_per_eval_length: 4
+num_eval_lengths: 10
+num_t: 100
+max_same_res: 50 # the number of pdb with the same number of residue to use to compute the ot plan.
+num_csv_processors: 5
+cache_full_dataset: False

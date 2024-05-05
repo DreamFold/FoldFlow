@@ -1,0 +1,25 @@
+# Benchmark model from SE(3) Flow Matcher
+node_embed_size: 32
+edge_embed_size: 32
+dropout: 0.0
+embed:
+  index_embed_size: 32
+  aatype_embed_size: 32
+  embed_self_conditioning: True
+  num_bins: 22
+  min_bin: 1e-5
+  max_bin: 20.0
+ipa:
+  c_s: ${model.node_embed_size}
+  c_z: ${model.edge_embed_size}
+  c_hidden: 32
+  c_skip: 64
+  no_heads: 2
+  no_qk_points: 2
+  no_v_points: 4
+  seq_tfmr_num_heads: 4
+  seq_tfmr_num_layers: 2
+  num_blocks: 1
+  coordinate_scaling: ${flow_matcher.r3.coordinate_scaling}
+  p_uncond: 0.2
+axis_angle: ${flow_matcher.so3.axis_angle}

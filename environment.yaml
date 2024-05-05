@@ -1,0 +1,39 @@
+name: foldflow-env
+channels:
+  - pytorch
+  - nvidia
+  - anaconda
+  - conda-forge
+  - defaults
+dependencies:
+  - biotite
+  - python>=3.8,<3.11
+  - pytorch<2
+  - pdbfixer=1.8.1 # from openfold
+  - libstdcxx-ng=13.2.0
+  - mdtraj
+  - pip
+  - pip:
+      - biopython
+      - click
+      - corner
+      - debugpy
+      - dm-tree
+      - einops
+      - fair-esm
+      - git+https://github.com/joeybose/geomstats.git
+      - gputil
+      - hydra-core
+      - hydra-joblib-launcher
+      - ipdb
+      - lightning
+      - lmdb
+      - ml-collections
+      - numpy
+      - pandas
+      - pot
+      - pytest
+      - tmtools
+      - tqdm
+      - wandb>=0.15.1
+      - -e .

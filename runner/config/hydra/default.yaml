@@ -1,0 +1,5 @@
+sweeper:
+  params:
+    # Example of hydra multi run and wandb.
+    experiment.name: use_wandb
+    experiment.use_wandb: True

@@ -1,0 +1,14 @@
+# Default or base configuration for SE(3) Flow Matcher experiments.
+defaults:
+  - data: default
+  - flow_matcher: default
+  - model: benchmark
+  - experiment: baseline
+  - local: null
+  - wandb: default
+  - override hydra/launcher: joblib
+  - _self_
+
+    # start_time_string: ${now:%Y-%m-%d}_${now:%H-%M-%S}
+start_time_string: "default"
+conda_env: se3

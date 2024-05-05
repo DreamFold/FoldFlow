@@ -1,0 +1,7 @@
+,tm_score,sample_path,header,sequence,rmsd
+0,0.2350240738139565,length_50/sample_0/self_consistency/esmf/sample_0.pdb,"sample_1, score=2.0812, global_score=2.0812, fixed_chains=[], designed_chains=['A'], model_name=v_48_020, git_hash=d6da521d665f42c2b5a2cc1c7c590dad61c714d6, seed=123",AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,11.607052122859841
+1,0.2702557632097547,length_50/sample_0/self_consistency/esmf/sample_1.pdb,"T=0.1, sample=1, score=0.9871, global_score=0.9871, seq_recovery=0.0200",GDPETDGKLFKGVEKDGVKGYDGIGKGNVIISDGKEYVDVPQILESELAK,6.841738866578856
+2,0.27112755468580857,length_50/sample_0/self_consistency/esmf/sample_2.pdb,"T=0.1, sample=2, score=0.9043, global_score=0.9043, seq_recovery=0.0000",GDPETDGKKFIGKEENGEKGYDGIGKGNTIISDGKEYKNVKQILESELEK,11.011783479143412
+3,0.2654758145934737,length_50/sample_0/self_consistency/esmf/sample_3.pdb,"T=0.1, sample=3, score=0.9144, global_score=0.9144, seq_recovery=0.0200",ADPKTDGKKFKGEEKNGEKGYDGIGKGNEIISDGKTYKGVKTTLEDELKK,10.412709699968989
+4,0.24153633663480614,length_50/sample_0/self_consistency/esmf/sample_4.pdb,"T=0.1, sample=4, score=0.9690, global_score=0.9690, seq_recovery=0.0000",GDPKTNGKKFKGKEKNGIKGYDGIGKGNEIISKGKVYKDIKQILEKELLK,13.029595296974362
+5,0.196642736872389,length_50/sample_0/self_consistency/esmf/sample_5.pdb,"T=0.1, sample=5, score=0.9434, global_score=0.9434, seq_recovery=0.0000",GDPKLNGKKFKGEEKDGEKGYDGIGKGNELISNGKIYKNVKQILEDELKK,12.595262271392423

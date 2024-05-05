@@ -1,9 +1,10 @@
 """Copyright (c) Dreamfold."""
 import torch
-from FoldFlow.so3.so3_helpers import tangent_space_proj
+from foldflow.utils.so3_helpers import tangent_space_proj
 from einops import rearrange
 
 torch.set_default_dtype(torch.float64)
+
 
 class PMLP(torch.nn.Module):
     def __init__(self, dim, out_dim=None, w=64, time_varying=False):
@@ -23,11 +24,12 @@ class PMLP(torch.nn.Module):
 
     def forward(self, input):
         v = self.net(input)
-        x = rearrange(input[:, :-1], 'b (c d) -> b c d', c=3, d=3)
-        v = rearrange(v, 'b (c d) -> b c d', c=3, d=3)
-        Pv = tangent_space_proj(x, v) # Pv is on the tangent space of x
-        Pv = rearrange(Pv, 'b c d -> b (c d)', c=3, d=3)
+        x = rearrange(input[:, :-1], "b (c d) -> b c d", c=3, d=3)
+        v = rearrange(v, "b (c d) -> b c d", c=3, d=3)
+        Pv = tangent_space_proj(x, v)  # Pv is on the tangent space of x
+        Pv = rearrange(Pv, "b c d -> b (c d)", c=3, d=3)
         return Pv
+
 
 class MLP(torch.nn.Module):
     def __init__(self, dim, out_dim=None, w=256, time_varying=False):
@@ -48,6 +50,7 @@ class MLP(torch.nn.Module):
     def forward(self, x):
         return self.net(x)
 
+
 class GradModel(torch.nn.Module):
     def __init__(self, action):
         super().__init__()
@@ -58,7 +61,7 @@ class GradModel(torch.nn.Module):
         grad = torch.autograd.grad(torch.sum(self.action(x)), x, create_graph=True)[0]
         return grad[:, :-1]
 
-    
+
 # MLP with tangential projection of the output to the tangent space of the input
 class PMLP(torch.nn.Module):
     def __init__(self, dim, out_dim=None, w=64, time_varying=False):
@@ -78,11 +81,11 @@ class PMLP(torch.nn.Module):
 
     def forward(self, input):
         v = self.net(input)
-        x = rearrange(input[:, :-1], 'b (c d) -> b c d', c=3, d=3)
-        v = rearrange(v, 'b (c d) -> b c d', c=3, d=3)
-        Pv = self.tangent_space_proj(x, v) # Pvt is on the tangent space of xt
-        return rearrange(Pv, 'b c d -> b (c d)', c=3, d=3)
-    
+        x = rearrange(input[:, :-1], "b (c d) -> b c d", c=3, d=3)
+        v = rearrange(v, "b (c d) -> b c d", c=3, d=3)
+        Pv = self.tangent_space_proj(x, v)  # Pvt is on the tangent space of xt
+        return rearrange(Pv, "b c d -> b (c d)", c=3, d=3)
+
     def tangent_space_proj(self, R, M):
         """
         Project the given 3x3 matrix M onto the tangent space of SO(3) at point R in PyTorch.
@@ -101,4 +104,3 @@ class PMLP(torch.nn.Module):
         T = R @ skew_symmetric_part
 
         return T
-        

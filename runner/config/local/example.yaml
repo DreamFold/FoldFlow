@@ -1,0 +1,33 @@
+# @package _global_
+
+# Add your local paths here.
+# for the paths for the datasets, the ckpt, wandb, etc.
+
+data:
+  csv_path: ./data/metadata_one.csv
+  cluster_path: ./data/clusters-by-entity-30.txt # or any cluster file
+  filtering:
+    max_len: 512
+  min_t: 0.01
+  cache_full_dataset: False  # Cache both to disk (LMDB) and in memory.
+  cache_dataset_in_memory: False # If True load from mem. If False, load from disk (LMDB).
+  cache_path: ./cache/  # Where to save the LMDB cache.
+experiment:
+  wandb_dir: ./wandb/
+  ckpt_dir: ./ckpt_dir/
+  name: example
+  separate_rot_loss: True
+  use_ddp: False
+  num_gpus: 1
+  batch_size: 11
+  num_epoch: 2000
+  ckpt_freq: 500
+  eval_freq: 250
+
+flow_matcher:
+  stochastic_paths: False
+
+
+wandb:
+  tags: null
+  job_type: test
