@@ -81,6 +81,8 @@ results/
             └── sample_1
 ```
 
+Note that saved models can be found [here](https://github.com/DreamFold/FoldFlow/releases/tag/0.1.0) for base, optimal transport (OT) and stochastic (SFM) foldflow models.
+
 # Training
 
 ## Getting Started: Training FoldFlow on one protein
