@@ -119,9 +119,9 @@ class SE3FlowMatcher:
             "rot_vectorfield_scaling": rot_vectorfield_scaling,
         }
 
-    def calc_trans_vectorfield(self, trans_t, trans_0, t, use_torch=False, scale=True):
+    def calc_trans_vectorfield(self, trans_0, trans_t, t, use_torch=False, scale=True):
         return self._r3_fm.vectorfield(
-            trans_t, trans_0, t, use_torch=use_torch, scale=scale
+            trans_0, trans_t, t, use_torch=use_torch, scale=scale
         )
 
     def calc_rot_vectorfield(self, rot_0, rot_t, t):

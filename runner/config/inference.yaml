@@ -1,10 +1,15 @@
 # Configuration for inference on SE(3) diffusion experiments.
 defaults:
   - base
+  - override model: ff2
   - _self_
 
 experiment:
-  eval_dir: None # if None is the evaluation won't be saved.
+  eval_dir: ./ # if None the evaluation won't be saved.
+
+flow_matcher:
+  so3:
+    inference_scaling: 10.0
 
 inference:
   name: null
@@ -18,11 +23,12 @@ inference:
   output_dir: ./results
 
   # Path to model weights.
-  weights_path: ./ckpt/foldflow-sfm.pth
+  # weights_path: ./ckpt/foldflow-sfm.pth # For FoldFlow-1 with stochastic flow matcher.
+  weights_path: ./ckpt/ff2_base.pth
 
   flow:
     # Number of steps.
-    num_t: 500
+    num_t: 30
     # Analogous to sampling temperature.
     noise_scale: 0.1
     # Final t.
@@ -32,7 +38,7 @@ inference:
     # Number of backbone samples per sequence length.
     samples_per_length: 25
     # Number of ESMFdold samples per backbone sample.
-    seq_per_sample: 5
+    seq_per_sample: 8
     # Minimum sequence length to sample.
     min_length: 100
     # Maximum sequence length to sample.

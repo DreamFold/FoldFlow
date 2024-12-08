@@ -38,6 +38,7 @@ class Experiment:
         self,
         *,
         conf: DictConfig,
+        model = None,
     ):
         """Initialize experiment.
 
@@ -109,29 +110,30 @@ class Experiment:
 
         # Initialize experiment objects
         self._flow_matcher = se3_fm.SE3FlowMatcher(self._fm_conf)
+        self._model = model
+        if self._model is None:
+            self._model = network.VectorFieldNetwork(self._model_conf, self.flow_matcher)
+            if ckpt_model is not None:
+                ckpt_model = {k.replace("module.", ""): v for k, v in ckpt_model.items()}
+                ckpt_model = {
+                    k.replace("score_model.", "vectorfield."): v
+                    for k, v in ckpt_model.items()
+                }
+                self._model.load_state_dict(ckpt_model, strict=True)
 
-        self._model = network.VectorFieldNetwork(self._model_conf, self.flow_matcher)
-        if ckpt_model is not None:
-            ckpt_model = {k.replace("module.", ""): v for k, v in ckpt_model.items()}
-            ckpt_model = {
-                k.replace("score_model.", "vectorfield."): v
-                for k, v in ckpt_model.items()
-            }
-            self._model.load_state_dict(ckpt_model, strict=True)
-
-        num_parameters = sum(p.numel() for p in self._model.parameters())
-        self._exp_conf.num_parameters = num_parameters
-        self._log.info(f"Number of model parameters {num_parameters}")
-        self._optimizer = torch.optim.Adam(
-            self._model.parameters(), lr=self._exp_conf.learning_rate
-        )
-        if ckpt_opt is not None:
-            self._optimizer.load_state_dict(ckpt_opt)
-            if conf.experiment.use_gpu:
-                for state in self._optimizer.state.values():
-                    for k, v in state.items():
-                        if isinstance(v, torch.Tensor):
-                            state[k] = v.cuda()
+            num_parameters = sum(p.numel() for p in self._model.parameters())
+            self._exp_conf.num_parameters = num_parameters
+            self._log.info(f"Number of model parameters {num_parameters}")
+            self._optimizer = torch.optim.Adam(
+                self._model.parameters(), lr=self._exp_conf.learning_rate
+            )
+            if ckpt_opt is not None:
+                self._optimizer.load_state_dict(ckpt_opt)
+                if conf.experiment.use_gpu:
+                    for state in self._optimizer.state.values():
+                        for k, v in state.items():
+                            if isinstance(v, torch.Tensor):
+                                state[k] = v.cuda()
 
         if self._exp_conf.full_ckpt_dir is not None:
             # Set-up checkpoint location

@@ -26,6 +26,8 @@ from omegaconf import DictConfig, OmegaConf
 from openfold.data import data_transforms
 from tools.analysis import metrics
 from tools.analysis import utils as au
+from foldflow.models.ff2flow.flow_model import FF2Model
+from foldflow.models.ff2flow.ff2_dependencies import FF2Dependencies
 
 from runner import train
 
@@ -118,25 +120,29 @@ class Sampler:
         self._log.info(f"Saving inference config to {config_path}")
 
         # Load models and experiment
-        self._load_ckpt(conf_overrides)
+        weights_pkl = du.read_pkl(
+            self._weights_path, use_torch=True, map_location=self.device
+        )
+        if conf.model.model_name == "ff1":
+            self._load_ckpt_ff1(weights_pkl, conf_overrides)
+        else:
+            deps = FF2Dependencies(conf)
+            self.model = FF2Model.from_ckpt(weights_pkl, deps)
+            self.flow_matcher = deps.flow_matcher
+            self.exp = train.Experiment(conf=self._conf, model=self.model)
+        self.model = self.model.to(self.device)
+        self.model.eval()
         self._folding_model = esm.pretrained.esmfold_v1().eval()
         self._folding_model = self._folding_model.to(self.device)
 
-    def _load_ckpt(self, conf_overrides):
+    def _load_ckpt_ff1(self, weights_pkl, conf_overrides):
         """Loads in model checkpoint."""
         self._log.info(f"Loading weights from {self._weights_path}")
 
         # Read checkpoint and create experiment.
-        weights_pkl = du.read_pkl(
-            self._weights_path, use_torch=True, map_location=self.device
-        )
-
         # Merge base experiment config with checkpoint config.
         try:
             model_conf = weights_pkl["conf"].model
-            import ipdb
-
-            ipdb.set_trace()
             model_conf = {
                 k.replace("diffuser", "flow_matcher"): v for k, v in model_conf
             }
@@ -163,43 +169,7 @@ class Sampler:
             for k, v in model_weights.items()
         }
         self.model.load_state_dict(model_weights)
-        self.model = self.model.to(self.device)
-        self.model.eval()
         self.flow_matcher = self.exp.flow_matcher
-
-    def init_data(
-        self,
-        *,
-        rigids_impute,
-        torsion_impute,
-        fixed_mask,
-        res_mask,
-    ):
-        num_res = res_mask.shape[0]
-        flow_mask = (1 - fixed_mask) * res_mask
-        fixed_mask = fixed_mask * res_mask
-
-        ref_sample = self.flow_matcher.sample_ref(
-            n_samples=num_res,
-            rigids_impute=rigids_impute,
-            flow_mask=flow_mask,
-            as_tensor_7=True,
-        )
-        res_idx = torch.arange(1, num_res + 1)
-        init_feats = {
-            "res_mask": res_mask,
-            "seq_idx": res_idx * res_mask,
-            "fixed_mask": fixed_mask,
-            "torsion_angles_sin_cos": torsion_impute,
-            "sc_ca_t": torch.zeros_like(rigids_impute.get_trans()),
-            **ref_sample,
-        }
-        # Add batch dimension and move to GPU.
-        init_feats = tree.map_structure(
-            lambda x: x if torch.is_tensor(x) else torch.tensor(x), init_feats
-        )
-        init_feats = tree.map_structure(lambda x: x[None].to(self.device), init_feats)
-        return init_feats
 
     def run_sampling(self):
         """Sets up inference run.
@@ -429,6 +399,8 @@ class Sampler:
         # Process motif features.
         res_mask = np.ones(sample_length)
         fixed_mask = np.zeros_like(res_mask)
+        aatype = torch.zeros(sample_length, dtype=torch.int32)
+        chain_idx = torch.zeros_like(aatype)
 
         # Initialize data
         ref_sample = self.flow_matcher.sample_ref(
@@ -442,6 +414,8 @@ class Sampler:
             "fixed_mask": fixed_mask,
             "torsion_angles_sin_cos": np.zeros((sample_length, 7, 2)),
             "sc_ca_t": np.zeros((sample_length, 3)),
+            "aatype": aatype,
+            "chain_idx": chain_idx,
             **ref_sample,
         }
         # Add batch dimension and move to GPU.

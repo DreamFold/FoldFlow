@@ -171,7 +171,7 @@ class R3FM:
     def vectorfield_scaling(self, t: float):
         return 1
 
-    def vectorfield(self, x_t, x_0, t, use_torch=False, scale=False):
+    def vectorfield(self, x_0, x_t, t, use_torch=False, scale=False):
         if scale:
             x_t = self._scale(x_t)
             x_0 = self._scale(x_0)

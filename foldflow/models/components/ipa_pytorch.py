@@ -599,10 +599,8 @@ class IpaNetwork(nn.Module):
         ipa_conf = model_conf.ipa
         self._ipa_conf = ipa_conf
         self.flow_matcher = flow_matcher
+        self.update_edge_all = getattr(ipa_conf, "do_last_edge_update", False)
 
-        # Classiier Free Guidance (CFG) parameters
-        # self.attn_type = ipa_conf.attn_type
-        self.p_uncond = ipa_conf.p_uncond
         # self.context_embed_size = ipa_conf.context_embed_size
 
         self.scale_pos = lambda x: x * ipa_conf.coordinate_scaling
@@ -637,7 +635,7 @@ class IpaNetwork(nn.Module):
             )
             self.trunk[f"bb_update_{b}"] = BackboneUpdate(ipa_conf.c_s)
 
-            if b < ipa_conf.num_blocks - 1:
+            if b < ipa_conf.num_blocks - 1 or self.update_edge_all:
                 # No edge update on the last block.
                 edge_in = self._model_conf.edge_embed_size
                 self.trunk[f"edge_transition_{b}"] = EdgeTransition(
@@ -648,7 +646,7 @@ class IpaNetwork(nn.Module):
 
         self.torsion_pred = TorsionAngles(ipa_conf.c_s, 1)
 
-    def forward(self, init_node_embed, edge_embed, input_feats, use_context=False):
+    def forward(self, init_node_embed, edge_embed, input_feats, use_context=False, encoder_mode=False):
         node_mask = input_feats["res_mask"].type(torch.float32)
         flow_mask = (1 - input_feats["fixed_mask"].type(torch.float32)) * node_mask
         edge_mask = node_mask[..., None] * node_mask[..., None, :]
@@ -683,7 +681,7 @@ class IpaNetwork(nn.Module):
                 rigid_update, flow_mask[..., None]
             )
 
-            if b < self._ipa_conf.num_blocks - 1:
+            if b < self._ipa_conf.num_blocks - 1 or self.update_edge_all:
                 edge_embed = self.trunk[f"edge_transition_{b}"](node_embed, edge_embed)
                 edge_embed *= edge_mask[..., None]
         t = input_feats["t"].requires_grad_(True)
@@ -697,18 +695,22 @@ class IpaNetwork(nn.Module):
         rot_vectorfield = rot_vectorfield * node_mask[..., None, None]
 
         curr_rigids = self.unscale_rigids(curr_rigids)
+        _, psi_pred = self.torsion_pred(node_embed)
+        model_out = {
+            "psi": psi_pred,
+            "final_rigids": curr_rigids,
+        }
+        if encoder_mode:
+            model_out["node_embed"] = node_embed
+            model_out["edge_embed"] = edge_embed
+            return model_out
         trans_vectorfield = self.flow_matcher.calc_trans_vectorfield(
-            init_rigids.get_trans(),
             curr_rigids.get_trans(),
+            init_rigids.get_trans(),
             input_feats["t"][:, None, None],
             use_torch=True,
         )
         trans_vectorfield = trans_vectorfield * node_mask[..., None]
-        _, psi_pred = self.torsion_pred(node_embed)
-        model_out = {
-            "psi": psi_pred,
-            "rot_vectorfield": rot_vectorfield,
-            "trans_vectorfield": trans_vectorfield,
-            "final_rigids": curr_rigids,
-        }
+        model_out["rot_vectorfield"] = rot_vectorfield
+        model_out["trans_vectorfield"] = trans_vectorfield
         return model_out
