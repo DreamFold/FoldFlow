@@ -19,7 +19,6 @@ class ProjectConcatRepresentation(nn.Module):
         super().__init__()
         self.single_dim = single_dim
         self.pair_dim = pair_dim
-        self._verify_input_dicts(input_dims_single, input_dims_pair)
         self.modalities_name = list(input_dims_single.keys())
         assert all((k in IMPLEMENTED_REPRESENTATION for k in self.modalities_name))
 
@@ -50,17 +49,9 @@ class ProjectConcatRepresentation(nn.Module):
     def out_pair_dim(self):
         return self.pair_dim * len(self.modalities_name)
 
-    def _verify_input_dicts(
-        self, single: Dict[str, torch.Tensor], pair: Dict[str, torch.Tensor]
-    ):
-        assert all((k in IMPLEMENTED_REPRESENTATION for k in single))
-        assert all((k in IMPLEMENTED_REPRESENTATION for k in pair))
-        assert set(single.keys()) == set(pair.keys())
-
     def forward(
         self, single: Dict[str, torch.Tensor], pair: Dict[str, torch.Tensor]
     ) -> Tuple[torch.Tensor, torch.Tensor]:
-        self._verify_input_dicts(single, pair)
 
         # Project and concatenate
         single_repr = torch.cat(
