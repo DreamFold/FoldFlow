@@ -28,7 +28,7 @@ inference:
 
   flow:
     # Number of steps.
-    num_t: 30
+    num_t: 50
     # Analogous to sampling temperature.
     noise_scale: 0.1
     # Final t.
@@ -36,7 +36,7 @@ inference:
 
   samples:
     # Number of backbone samples per sequence length.
-    samples_per_length: 25
+    samples_per_length: 50
     # Number of ESMFdold samples per backbone sample.
     seq_per_sample: 8
     # Minimum sequence length to sample.

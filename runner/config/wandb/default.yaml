@@ -1,0 +1,8 @@
+use_wandb: True
+entity: null
+project: se3-fm
+dir: ./
+tags: null
+group: null
+offline: False
+job_type: null

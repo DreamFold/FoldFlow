@@ -191,6 +191,7 @@ ckpt/
 *.pth
 *.sw?
 wandb/
+!runner/config/wandb/
 results/
 
 
