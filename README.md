@@ -8,7 +8,7 @@
 
 </div>
 
-**FoldFlow** models are [flow matching](https://github.com/atong01/conditional-flow-matching) generative models for protein design. FoldFlow models work by generating protein structures as represented on the $SE(3)^N_0$ manifold. In FoldFlow-2, we introduce a new sequence condition structure model, achieving SOTA results on desidesignabilitygnabilityu and diversity. FF-2 is based on our prior work, which introduced the first flow matching model for protein design. For more information, see our publication presented at ICLR 2024 [arXiv](https://arxiv.org/abs/2310.02391) and NeurIPS 2024 [arXiv](https://arxiv.org/abs/2405.203131).
+**FoldFlow** models are [flow matching](https://github.com/atong01/conditional-flow-matching) generative models for protein design. FoldFlow models work by generating protein structures as represented on the $SE(3)^N_0$ manifold. In FoldFlow-2, we introduce a new sequence condition structure model, achieving SOTA results on designability and diversity. FF-2 is based on our prior work, which introduced the first flow matching model for protein design. For more information, see our publication presented at ICLR 2024 [arXiv](https://arxiv.org/abs/2310.02391) and NeurIPS 2024 [arXiv](https://arxiv.org/abs/2405.203131).
 
 This code heavily relies on and builds off of the [FrameDiff](https://github.com/jasonkyuyim/se3_diffusion) code. We thank the authors of that work for their efforts.
 
