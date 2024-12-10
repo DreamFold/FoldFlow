@@ -2,33 +2,40 @@
 
 # SE(3)-Stochastic Flow Matching for Protein Backbone Generation
 
-[![OT-CFM Preprint](http://img.shields.io/badge/paper-arxiv.2310.02391-B31B1B.svg)](https://arxiv.org/abs/2310.02391)
+[![FF-1 Preprint](http://img.shields.io/badge/paper-arxiv.2310.02391-B31B1B.svg)](https://arxiv.org/abs/2310.02391)
+[![FF-2 Preprint](http://img.shields.io/badge/paper-arxiv.2405.20313-B31B1B.svg)](https://arxiv.org/abs/2405.20313)
 [![pytorch](https://img.shields.io/badge/PyTorch_1.13+-ee4c2c?logo=pytorch&logoColor=white)](https://pytorch.org/get-started/locally/)
 
 </div>
 
-**FoldFlow** is a [flow matching](https://github.com/atong01/conditional-flow-matching) generative model for protein design. FoldFlow works by generating protein structures as represented on the $SE(3)^N_0$ manifold. We investigate improvements such as including minibatch optimal transport conditional flows (**FoldFlow-OT**) which greatly improves designability and stochastic paths (**FoldFlow-SFM**), which increases the proportion of novel designs. For more information see our [arXiv](https://arxiv.org/abs/2310.02391) preprint.
+**FoldFlow** models are [flow matching](https://github.com/atong01/conditional-flow-matching) generative models for protein design. FoldFlow models work by generating protein structures as represented on the $SE(3)^N_0$ manifold. In FoldFlow-2, we introduce a new sequence condition structure model, achieving SOTA results on designability and diversity. FF-2 is based on our prior work, which introduced the first flow matching model for protein design. For more information, see our publication presented at ICLR 2024 [arXiv](https://arxiv.org/abs/2310.02391) and NeurIPS 2024 [arXiv](https://arxiv.org/abs/2405.203131).
 
 This code heavily relies on and builds off of the [FrameDiff](https://github.com/jasonkyuyim/se3_diffusion) code. We thank the authors of that work for their efforts.
 
 ![foldflow](media/foldflow-sfm_protein.gif)
 
 # Installation
-To reproduce our results or train your own models you can install our codebase and its dependencies directly from this repository. The following command will clone our repository, create a conda environment from `se3.yml`, and install the dependencies. We tested the code with Python 3.9.15, and CUDA 11.6.1.
+To reproduce our results or train your own models you can install our codebase and its dependencies directly from this repository. 
 
+The following command will clone our repository, create a micromamba environment from `environment.yaml`, and install the dependencies. We tested the code with Python 3.9.15, and CUDA 11.6.1. First [install micromamba](https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html) then run the following.
 
 ```bash
+# Install micromamba
+"${SHELL}" <(curl -L micro.mamba.pm/install.sh)
+
+# Clone repo
 git clone https://github.com/DreamFold/FoldFlow.git
 cd FoldFlow
-conda env create -f se3.yml
-conda activate se3
-pip install -e .
+
+# Install dependencies and activate environment
+micromamba create -f environment.yaml
+micromamba activate foldflow-env
 ```
 # Inference
 
-This project uses [hydra](https://hydra.cc) for configuration which allows easy command-line overrides and structured configs. You can find all the configurations files in `runner/config`.
+This project uses [hydra](https://hydra.cc) for configuration which allows easy command-line overrides and structured configs. You can find all the configurations files in `runner/config`. You can download the pretrained weights in the assets of the GitHub releases.
 
-In order to run inference with you own checkpoints or with our pretrained checkpoints, you need to specify the path to the checkpoint in the `runner/config/inference.yaml` file. During inference, we also evaluate FoldFlow designs using the Protein MPNN and ESMfold.
+In order to run inference with your own checkpoints or with our pretrained checkpoints, you need to specify the path to the checkpoint in the `runner/config/inference.yaml` file. During inference, we also evaluate FoldFlow designs using the Protein MPNN and ESMfold.
 
 In `runner/config/inference.yaml` you can directly add the path to the checkpoints.
 
@@ -45,7 +52,7 @@ inference:
   output_dir: ./results/ # your output directory
 
   # Path to model weights.
-  weights_path: path/to/ckpt/step_10.pth # Your FoldFlow checkpoint.
+  weights_path: ./ckpt/foldflow-sfm.pth # Your FoldFlow checkpoint.
 ```
 Once you have specified the path to the checkpoints, you can run inference using the following command:
 
@@ -60,7 +67,15 @@ You can also modify the configurations from the command line. For example, if yo
 python runner/inference.py inference.weights_path=path/to/new_ckpt.pth inference.name=new_ckpt
 ```
 
-We followed the same inference procedure as [SE(3) diffusion model with application to protein backbone generation](https://github.com/jasonkyuyim/se3_diffusion). The results are saved in `results/` (or an another path that you specified), in the following way:
+For example, to run inference using the FF-2 model
+```sh
+python runner/inference.py model=ff2 inference.weights_path=<path/to/ff2_base.pth>
+```
+To use FF-2 model finetuned for diversity (section 4.2 of the paper), you must use the checkpoint `ff2_reft.pth` by specifying `inference.weights_path=<path/to/ff2_reft.pth>`.
+
+
+We followed the same inference procedure as [SE(3) diffusion model with application to protein backbone generation](https://github.com/jasonkyuyim/se3_diffusion). The results are saved in `results/` (or another path that you specified), in the following way:
+
 
 ```bash
 results/
@@ -161,14 +176,10 @@ Update your config to point to the clustered data:
 data:
   cluster_path: ./data/processed_pdb/clusters-by-entity-30.txt
 ```
-
 </details>
 
 You can add the paths of to your data directly in `runner/config/data/default.yaml` or by adding your local configuration in `runner/config/local`. We suggest the latter, as it makes it easier to share your code with others. We provide an example of such configuration in `runner/config/local/example.yaml`.
 
-## Evaluating Protein Models
-
-Eval code coming soon!
 
 ## Toy SO(3) examples
 Please find all the jupyter notebooks in `so3_experiments`, they are designed to be minimalistic and easy to follow and may be useful for other projects for applications of Flow Matching on SO(3).
@@ -195,11 +206,18 @@ Several files in `/data/` are adapted from [AlphaFold](https://github.com/deepmi
 If this codebase is useful towards other research efforts please consider citing us.
 
 ```
-@inproceedings{bose2024se3stochastic,
-      title={SE(3)-Stochastic Flow Matching for Protein Backbone Generation},
-      author={Avishek Joey Bose and Tara Akhound-Sadegh and Guillaume Huguet and Killian Fatras and Jarrid Rector-Brooks and Cheng-Hao Liu and Andrei Cristian Nica and Maksym Korablyov and Michael Bronstein and Alexander Tong},
-      year={2024},
-      booktitle={The International Conference on Learning Representations (ICLR)},
+@article{huguet2024sequence,
+  title={Sequence-Augmented SE (3)-Flow Matching For Conditional Protein Backbone Generation},
+  author={Huguet, Guillaume and Vuckovic, James and Fatras, Kilian and Thibodeau-Laufer, Eric and Lemos, Pablo and Islam, Riashat and Liu, Cheng-Hao and Rector-Brooks, Jarrid and Akhound-Sadegh, Tara and Bronstein, Michael and others},
+  journal={Advances in neural information processing systems},
+  volumne={38},
+  year={2024}
+}
+
+@inproceedings{bose2024se3,
+  title={SE (3)-Stochastic Flow Matching for Protein Backbone Generation},
+  author={Bose, Joey and Akhound-Sadegh, Tara and Huguet, Guillaume and FATRAS, Kilian and Rector-Brooks, Jarrid and Liu, Cheng-Hao and Nica, Andrei Cristian and Korablyov, Maksym and Bronstein, Michael M and Tong, Alexander},
+  booktitle={The Twelfth International Conference on Learning Representations}
 }
 ```
 
@@ -208,6 +226,6 @@ If this codebase is useful towards other research efforts please consider citing
 We welcome issues and pull requests (especially bug fixes) and contributions.
 We will try our best to improve readability and answer questions!
 
-### Licences
+### Licenses
 
 <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/Dreamfold/foldflow">FoldFlow</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://dreamfold.ai">Dreamfold</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Attribution-NonCommercial 4.0 International<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"></a></p>

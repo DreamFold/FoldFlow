@@ -1,0 +1,30 @@
+model_name: "ff2"
+esm2_model_key: "esm2_650M" # Trained with "esm2_650M"
+scaffold_training: False
+binder_training: False
+binder_percent_fix_structure: 1.0
+bb_encoder:
+  num_blocks: 2 
+  coordinate_scaling: ${flow_matcher.r3.coordinate_scaling}
+bb_decoder:
+  num_blocks: 2
+  coordinate_scaling: ${flow_matcher.r3.coordinate_scaling}
+seq_emb_to_block:
+  single_dim: 128 
+  pair_dim: 128
+representation_combiner:
+  single_dim: 128 # NOTE: If proj+concat, the total dim will be 512
+  pair_dim: 64 # NOTE: If proj+concat, the total dim will be 512
+  layer_norm: True
+modalities_transformer:
+  trunk_type: "transformer"
+  num_blocks: 2
+  sequence_head_width: 32
+  pairwise_head_width: 32
+  chunk_size: null # null won't chunk. Lower chunk_size reduce memory, but reduces speed.
+p_mask_sequence: 0.5
+
+embed:
+  embed_self_conditioning: True
+  use_alphafold_position_embedding: False
+  relpos_k: null

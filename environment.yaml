@@ -6,13 +6,12 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - biotite
   - python>=3.8,<3.11
   - pytorch<2
-  - pdbfixer=1.8.1 # from openfold
-  - libstdcxx-ng=13.2.0
+  - libstdcxx-ng
   - mdtraj
   - pip
+  # - pdbfixer=1.8.1
   - pip:
       - biopython
       - click
@@ -36,4 +35,7 @@ dependencies:
       - tmtools
       - tqdm
       - wandb>=0.15.1
+      - OpenMM
+      - pydantic
+      - biotite
       - -e .

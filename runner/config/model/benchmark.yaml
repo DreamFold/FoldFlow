@@ -1,4 +1,5 @@
 # Benchmark model from SE(3) Flow Matcher
+model_name: "ff1"
 node_embed_size: 256
 edge_embed_size: 128
 dropout: 0.0
