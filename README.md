@@ -33,7 +33,7 @@ micromamba activate foldflow-env
 ```
 # Inference
 
-This project uses [hydra](https://hydra.cc) for configuration which allows easy command-line overrides and structured configs. You can find all the configurations files in `runner/config`.
+This project uses [hydra](https://hydra.cc) for configuration which allows easy command-line overrides and structured configs. You can find all the configurations files in `runner/config`. You can download the pretrained weights in the assets of the GitHub releases.
 
 In order to run inference with your own checkpoints or with our pretrained checkpoints, you need to specify the path to the checkpoint in the `runner/config/inference.yaml` file. During inference, we also evaluate FoldFlow designs using the Protein MPNN and ESMfold.
 
@@ -71,8 +71,11 @@ For example, to run inference using the FF-2 model
 ```sh
 python runner/inference.py model=ff2 inference.weights_path=<path/to/ff2_base.pth>
 ```
+To use FF-2 model finetuned for diversity (section 4.2 of the paper), you must use the checkpoint `ff2_reft.pth` by specifying `inference.weights_path=<path/to/ff2_reft.pth>`.
 
-We followed the same inference procedure as [SE(3) diffusion model with application to protein backbone generation](https://github.com/jasonkyuyim/se3_diffusion). The results are saved in `results/` (or an another path that you specified), in the following way:
+
+We followed the same inference procedure as [SE(3) diffusion model with application to protein backbone generation](https://github.com/jasonkyuyim/se3_diffusion). The results are saved in `results/` (or another path that you specified), in the following way:
+
 
 ```bash
 results/
@@ -177,9 +180,6 @@ data:
 
 You can add the paths of to your data directly in `runner/config/data/default.yaml` or by adding your local configuration in `runner/config/local`. We suggest the latter, as it makes it easier to share your code with others. We provide an example of such configuration in `runner/config/local/example.yaml`.
 
-## Evaluating Protein Models
-
-Eval code coming soon!
 
 ## Toy SO(3) examples
 Please find all the jupyter notebooks in `so3_experiments`, they are designed to be minimalistic and easy to follow and may be useful for other projects for applications of Flow Matching on SO(3).
@@ -226,6 +226,6 @@ If this codebase is useful towards other research efforts please consider citing
 We welcome issues and pull requests (especially bug fixes) and contributions.
 We will try our best to improve readability and answer questions!
 
-### Licences
+### Licenses
 
 <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/Dreamfold/foldflow">FoldFlow</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://dreamfold.ai">Dreamfold</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Attribution-NonCommercial 4.0 International<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"></a></p>
